@@ -1,0 +1,3300 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ramme for fravær – Børn & Unge</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f2ec;
+    --ink: #1a1a18;
+    --muted: #6b6860;
+    --bio: #4a7c6f;
+    --familie: #c4713a;
+    --skole: #3a6ba8;
+    --fritid: #7a5fa8;
+    --kommune: #a85f6b;
+    --forebyg: #5a8a3a;
+    --card-bg: #fffef9;
+    --border: rgba(26,26,24,0.1);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  header {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 em {
+    font-style: italic;
+    color: var(--bio);
+  }
+
+  header p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .notice {
+    max-width: 900px;
+    margin: 0 auto 2.5rem;
+    background: white;
+    border-left: 3px solid var(--bio);
+    padding: 0.9rem 1.2rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .notice strong { color: var(--ink); font-weight: 500; }
+
+  /* ── CENTER VISUAL ── */
+  .center-visual {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .orbit-wrapper {
+    position: relative;
+    width: 480px;
+    height: 480px;
+    flex-shrink: 0;
+  }
+
+  /* Connecting lines SVG */
+  .orbit-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Child center */
+  .child-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 4px 24px rgba(26,26,24,0.25);
+  }
+
+  .child-center .icon { font-size: 1.8rem; margin-bottom: 0.15rem; }
+  .child-center span {
+    font-family: 'Fraunces', serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    line-height: 1.3;
+    padding: 0 8px;
+  }
+
+  /* Arena bubbles */
+  .arena {
+    position: absolute;
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 5;
+    padding: 8px;
+  }
+
+  .arena:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.15);
+  }
+
+  .arena .a-icon { font-size: 1.4rem; margin-bottom: 0.2rem; }
+  .arena .a-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+    color: white;
+  }
+
+  /* Position each arena on the circle (r=175) – evenly spaced pentagon, 72° apart */
+  /* top (−90°) */
+  .arena-bio {
+    background: var(--bio);
+    top: calc(50% - 175px - 55px); left: calc(50% + 0px - 55px);
+    box-shadow: 0 4px 20px rgba(74,124,111,0.35);
+  }
+  /* upper-right (−18°) */
+  .arena-familie {
+    background: var(--familie);
+    top: calc(50% - 54px - 55px); left: calc(50% + 166px - 55px);
+    box-shadow: 0 4px 20px rgba(196,113,58,0.35);
+  }
+  /* lower-right (54°) */
+  .arena-skole {
+    background: var(--skole);
+    top: calc(50% + 142px - 55px); left: calc(50% + 103px - 55px);
+    box-shadow: 0 4px 20px rgba(58,107,168,0.35);
+  }
+  /* lower-left (126°) */
+  .arena-fritid {
+    background: var(--fritid);
+    top: calc(50% + 142px - 55px); left: calc(50% - 103px - 55px);
+    box-shadow: 0 4px 20px rgba(122,95,168,0.35);
+  }
+  /* upper-left (198°) */
+  .arena-kommune {
+    background: var(--kommune);
+    top: calc(50% - 54px - 55px); left: calc(50% - 166px - 55px);
+    box-shadow: 0 4px 20px rgba(168,95,107,0.35);
+  }
+
+  /* Forebyg band */
+  .forebyg-band {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    background: var(--forebyg);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+  }
+
+  .forebyg-band .fb-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .forebyg-band .fb-text {}
+  .forebyg-band .fb-text strong {
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .forebyg-band .fb-text p {
+    font-size: 0.78rem;
+    opacity: 0.85;
+    line-height: 1.5;
+  }
+
+  /* ── ARENA CARDS ── */
+  .section-title {
+    max-width: 900px;
+    margin: 0 auto 1.5rem;
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 1.3rem;
+    color: var(--muted);
+    letter-spacing: -0.01em;
+  }
+
+  .cards-grid {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s;
+  }
+
+  .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 1rem 1.2rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .card-header h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .card-header .card-icon { font-size: 1.1rem; margin-left: auto; }
+
+  .card-body { padding: 1rem 1.2rem; }
+
+  .questions-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .q-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .q-list li {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--ink);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .q-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+
+  /* ── MÅLGRUPPE SPOR ── */
+  .maal-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+  }
+
+  .maal-section .section-title { margin-bottom: 1rem; }
+
+  .maal-track {
+    display: flex;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .maal-col {
+    flex: 1;
+    padding: 1.2rem 1rem;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .maal-col:last-child { border-right: none; }
+  .maal-col:hover { background: white; }
+
+  .maal-col .m-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    margin-bottom: 0.7rem;
+    color: white;
+  }
+
+  .maal-col h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .maal-col p {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── PROCESS QUESTIONS ── */
+  .process-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+  }
+
+  .pq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .pq-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .pq-num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .pq-card p {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* ── ÅBNINGSSEKTION ── */
+  .opening-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+  }
+
+  .opening-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .opening-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Velkomst til familien */
+  .family-welcome {
+    background: var(--ink);
+    color: white;
+    border-radius: 10px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .family-welcome::before {
+    content: '❝';
+    position: absolute;
+    top: -0.5rem;
+    right: 1.5rem;
+    font-size: 8rem;
+    opacity: 0.06;
+    font-family: 'Fraunces', serif;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .family-welcome .fw-tag {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    margin-bottom: 0.8rem;
+  }
+
+  .family-welcome h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 1.6rem;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .family-welcome h2 em {
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  .family-welcome p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    opacity: 0.8;
+    max-width: 560px;
+  }
+
+  /* Interview spørgsmål */
+  .interview-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .ic-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: white;
+  }
+
+  .ic-header .ic-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #8b1a2e;
+    flex-shrink: 0;
+  }
+
+  .ic-header h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .ic-header .ic-note {
+    margin-left: auto;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .ic-body {
+    padding: 1.2rem 1.5rem;
+  }
+
+  .ic-qs {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .ic-qs li {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+
+  .ic-qs li .q-num {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #8b1a2e;
+    opacity: 0.6;
+    flex-shrink: 0;
+    width: 1.4rem;
+    line-height: 1.5;
+  }
+
+  .ic-qs li .q-text {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  .ic-qs li .q-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  /* Refleksion */
+  .reflection-card {
+    background: #f0f6f4;
+    border: 1px solid rgba(74,124,111,0.2);
+    border-left: 4px solid var(--bio);
+    border-radius: 0 8px 8px 0;
+    padding: 1.2rem 1.5rem;
+  }
+
+  .reflection-card .rc-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--bio);
+    margin-bottom: 0.8rem;
+  }
+
+  .reflection-card .rc-qs {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .reflection-card .rc-qs li {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--ink);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .reflection-card .rc-qs li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--bio);
+    font-size: 0.8rem;
+  }
+
+  .section-divider {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-divider span {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+
+  /* ── LOVGIVNING NOTE ── */
+  .lovgivning-box {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .lovgivning-box .lv-header {
+    background: #f0f0ee;
+    padding: 0.9rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lovgivning-box .lv-header span {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+  }
+
+  .lovgivning-box .lv-header strong {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .lovgivning-box .lv-body {
+    padding: 1.2rem 1.4rem;
+  }
+
+  .lovgivning-box .lv-intro {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .lv-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+
+  .lv-table th {
+    text-align: left;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lv-table td {
+    padding: 0.65rem 0.8rem;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .lv-table tr:last-child td { border-bottom: none; }
+
+  .lv-table td:first-child {
+    font-weight: 500;
+    white-space: nowrap;
+    width: 130px;
+  }
+
+  .lv-table .lv-law {
+    color: var(--muted);
+    font-size: 0.73rem;
+    margin-top: 0.2rem;
+    font-style: italic;
+  }
+
+  .lv-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 20px;
+    color: white;
+    vertical-align: middle;
+    margin-left: 0.3rem;
+  }
+
+  .lv-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.6;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed var(--border);
+  }
+
+  .kortlaeg-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+  }
+
+  .kortlaeg-intro {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 640px;
+    margin-bottom: 1.5rem;
+  }
+
+  .kortlaeg-table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  table.kortlaeg {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    font-size: 0.78rem;
+  }
+
+  table.kortlaeg thead tr {
+    background: var(--ink);
+    color: white;
+  }
+
+  table.kortlaeg thead th {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+  }
+
+  table.kortlaeg thead th:first-child {
+    width: 130px;
+  }
+
+  table.kortlaeg tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  table.kortlaeg tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  table.kortlaeg tbody tr:hover {
+    background: #faf9f4;
+  }
+
+  table.kortlaeg td {
+    padding: 0.85rem 1rem;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  table.kortlaeg td:first-child {
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  table.kortlaeg td .trin-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    color: white;
+    margin-bottom: 0.3rem;
+  }
+
+  table.kortlaeg td .indsats-placeholder {
+    font-size: 0.75rem;
+    color: #bbb;
+    font-style: italic;
+  }
+
+  table.kortlaeg .col-trin1 { border-left: 3px solid var(--forebyg); }
+  table.kortlaeg .col-trin2 { border-left: 3px solid var(--skole); }
+  table.kortlaeg .col-trin3 { border-left: 3px solid var(--kommune); }
+
+  .kortlaeg-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  td.editable {
+    cursor: text;
+    min-height: 60px;
+    min-width: 160px;
+    transition: background 0.15s;
+    white-space: pre-wrap;
+    vertical-align: top;
+  }
+
+  td.editable:empty::before {
+    content: attr(data-placeholder);
+    color: #ccc;
+    font-style: italic;
+    font-size: 0.75rem;
+    pointer-events: none;
+  }
+
+  td.editable:focus {
+    outline: none;
+    background: #fffef0;
+    box-shadow: inset 0 0 0 2px rgba(90,138,58,0.3);
+  }
+
+  td.editable:hover:not(:focus) {
+    background: #fafaf5;
+  }
+
+  .kortlaeg-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .ka-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.5rem 1.1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .ka-save {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  .ka-save:hover { background: #333; }
+
+  .ka-clear {
+    background: white;
+    color: var(--muted);
+  }
+
+  .ka-clear:hover { background: #fdf0f0; border-color: #e0a0a0; color: #a04040; }
+
+  .ka-status {
+    font-size: 0.78rem;
+    color: var(--forebyg);
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .ka-status.visible { opacity: 1; }
+
+
+  .trin-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+  }
+
+  .trin-intro {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 620px;
+    margin-bottom: 2rem;
+  }
+
+  .trin-diagram {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2.5rem 2rem 1.5rem;
+    overflow: hidden;
+  }
+
+  /* Stepped layout: trin 1 top-left, 2 middle, 3 top-right, 4 bottom-center */
+  .trin-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .trin-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .trin-label-top {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    line-height: 1.3;
+  }
+
+  .trin-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #8b1a2e;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0 4px 16px rgba(139,26,46,0.3);
+    flex-shrink: 0;
+  }
+
+  .trin-circle .t-small {
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .trin-circle .t-num {
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .trin-body {
+    margin-top: 0.8rem;
+    text-align: center;
+    padding: 0 0.5rem;
+  }
+
+  .trin-body h4 {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+  }
+
+  .trin-body p {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .trin-body .trin-arenaer {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    justify-content: center;
+  }
+
+  .trin-tag {
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    color: white;
+  }
+
+  /* Arrow connectors */
+  .trin-connector {
+    display: flex;
+    align-items: center;
+    padding-top: 36px; /* align with circle centers */
+    flex-shrink: 0;
+  }
+
+  .arrow-both {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .arrow-line {
+    width: 48px;
+    height: 1.5px;
+    background: #8b1a2e;
+    position: relative;
+  }
+
+  .arrow-line::before,
+  .arrow-line::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 0; height: 0;
+    border-style: solid;
+  }
+
+  .arrow-r::after {
+    right: -1px;
+    transform: translateY(-50%);
+    border-width: 4px 0 4px 6px;
+    border-color: transparent transparent transparent #8b1a2e;
+  }
+  .arrow-r::before { display: none; }
+
+  .arrow-l::before {
+    left: -1px;
+    transform: translateY(-50%);
+    border-width: 4px 6px 4px 0;
+    border-color: transparent #8b1a2e transparent transparent;
+  }
+  .arrow-l::after { display: none; }
+
+  /* Down arrow from trin 1,2,3 to trin 4 */
+  .trin-down-row {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    align-items: flex-start;
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .trin-down-col {
+    flex: 1;
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .down-arrow {
+    width: 1.5px;
+    height: 36px;
+    background: #8b1a2e;
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .down-arrow::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 6px 4px 0 4px;
+    border-color: #8b1a2e transparent transparent transparent;
+  }
+
+  /* Horizontal bar connecting down arrows */
+  .horiz-bar {
+    position: absolute;
+    height: 1.5px;
+    background: #8b1a2e;
+    top: 0;
+  }
+
+  .trin-4-wrapper {
+    display: flex;
+    justify-content: center;
+    padding-top: 0;
+  }
+
+  .trin-bottom-note {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 1rem;
+    font-style: italic;
+    padding: 0.6rem;
+    border-top: 1px dashed var(--border);
+  }
+
+  @media (max-width: 540px) {
+    .orbit-wrapper { width: 320px; height: 320px; }
+    .arena { width: 76px; height: 76px; }
+    .child-center { width: 80px; height: 80px; }
+    .arena .a-icon { font-size: 1rem; }
+    .child-center .icon { font-size: 1.3rem; }
+    .arena-bio { top: calc(50% - 118px - 38px); left: calc(50% - 38px); }
+    .arena-familie { top: calc(50% - 36px - 38px); left: calc(50% + 112px - 38px); }
+    .arena-skole { top: calc(50% + 96px - 38px); left: calc(50% + 69px - 38px); }
+    .arena-fritid { top: calc(50% + 96px - 38px); left: calc(50% - 69px - 38px); }
+    .arena-kommune { top: calc(50% - 36px - 38px); left: calc(50% - 112px - 38px); }
+    .maal-track { flex-direction: column; }
+    .maal-col { border-right: none; border-bottom: 1px solid var(--border); }
+    .maal-col:last-child { border-bottom: none; }
+  }
+  /* ── INTRO SEKTION ── */
+  .intro-section {
+    max-width: 900px;
+    margin: 0 auto 2.5rem;
+    background: var(--ink);
+    border-radius: 12px;
+    overflow: hidden;
+    color: white;
+  }
+
+  .intro-top {
+    padding: 2.5rem 2.5rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .intro-top .intro-kicker {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.45;
+    margin-bottom: 0.8rem;
+  }
+
+  .intro-top h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .intro-top h2 em {
+    font-style: italic;
+    opacity: 0.6;
+  }
+
+  .intro-top p {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    opacity: 0.75;
+    max-width: 580px;
+  }
+
+  .intro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0;
+  }
+
+  .intro-grid-item {
+    padding: 1.2rem 1.5rem;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .intro-grid-item:last-child { border-right: none; }
+
+  .intro-grid-item .ig-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.4;
+    margin-bottom: 0.4rem;
+  }
+
+  .intro-grid-item .ig-value {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  .intro-flow {
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .intro-flow .if-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.4;
+    margin-bottom: 1rem;
+  }
+
+  .flow-steps {
+    display: flex;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    opacity: 0.75;
+  }
+
+  .flow-step .fs-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .flow-arrow {
+    opacity: 0.2;
+    margin: 0 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  /* ── META TEKST ── */
+  .meta-box {
+    max-width: 900px;
+    margin: -0.5rem auto 1.8rem;
+    padding: 0.9rem 1.2rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .meta-box strong {
+    color: var(--ink);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── ØVELSE BOKS ── */
+  .exercise-wrap {
+    max-width: 900px;
+    margin: 0 auto 2rem;
+  }
+
+  .exercise-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: white;
+    background: var(--bio);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px 20px 0 0;
+    margin-bottom: 0;
+  }
+
+  .exercise-box {
+    background: #f0f6f4;
+    border: 1px solid rgba(74,124,111,0.25);
+    border-radius: 0 8px 8px 8px;
+    padding: 1.3rem 1.5rem;
+  }
+
+  .exercise-box .ex-purpose {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .exercise-box .ex-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 0.9rem;
+  }
+
+  .exercise-box .ex-produces {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--bio);
+    font-weight: 500;
+  }
+
+  .exercise-box .ex-produces span {
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .exercise-box .ex-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.7rem;
+    padding-top: 0.7rem;
+    border-top: 1px dashed rgba(74,124,111,0.2);
+  }
+
+
+    border-top: 1px dashed rgba(74,124,111,0.2);
+  }
+
+  /* ── OPGAVEBESKRIVELSE ── */
+  .opgave-section {
+    max-width: 900px;
+    margin: 0 auto 2rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card-bg);
+  }
+
+  .opgave-header {
+    padding: 1rem 1.5rem;
+    background: #f0f0ee;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .opgave-body {
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+
+  .opgave-item h4 {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .opgave-item p { font-size: 0.85rem; line-height: 1.6; color: var(--ink); }
+
+  .opgave-leverancer {
+    grid-column: 1 / -1;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .opgave-leverancer h4 {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 0.7rem;
+  }
+
+  .lev-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .lev-tag {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  /* ── MØDE ACCORDION ── */
+  .moeder-section { max-width: 900px; margin: 0 auto 3rem; }
+  .moeder-intro { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+  .moed-accordion { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .moed-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card-bg);
+  }
+
+  .moed-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+  }
+
+  .moed-toggle:hover { background: #faf9f4; }
+
+  .moed-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 1rem; font-weight: 600;
+    color: white; flex-shrink: 0;
+  }
+
+  .moed-toggle-text { flex: 1; }
+  .moed-toggle-text .mt-title { font-size: 0.95rem; font-weight: 500; color: var(--ink); display: block; margin-bottom: 0.2rem; }
+  .moed-toggle-text .mt-sub { font-size: 0.75rem; color: var(--muted); }
+  .moed-meta { display: flex; gap: 0.8rem; align-items: center; flex-shrink: 0; }
+  .moed-time { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+  .moed-chevron { font-size: 0.8rem; color: var(--muted); transition: transform 0.25s; flex-shrink: 0; }
+  .moed-item.open .moed-chevron { transform: rotate(180deg); }
+
+  .moed-body {
+    display: none;
+    padding: 0 1.4rem 1.4rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .moed-item.open .moed-body { display: block; }
+
+  .moed-agenda { margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .agenda-item {
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    padding: 0.7rem 0.9rem; border-radius: 6px;
+    background: white; border: 1px solid var(--border);
+  }
+
+  .agenda-item .ag-time {
+    font-size: 0.68rem; font-weight: 500; color: var(--muted);
+    white-space: nowrap; padding-top: 0.15rem; min-width: 60px;
+  }
+
+  .agenda-item .ag-title { font-size: 0.85rem; font-weight: 500; color: var(--ink); margin-bottom: 0.2rem; }
+  .agenda-item .ag-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+  .agenda-item.ag-exercise { background: #f0f6f4; border-color: rgba(74,124,111,0.2); }
+  .agenda-item.ag-exercise .ag-title { color: var(--bio); }
+  .agenda-item.ag-viden { background: #f5f0fa; border-color: rgba(122,95,168,0.2); }
+  .agenda-item.ag-viden .ag-title { color: var(--fritid); }
+  .agenda-item.ag-break { background: #f8f8f6; border-color: transparent; }
+
+  .moed-produces {
+    margin-top: 1rem; padding: 0.9rem 1.1rem;
+    background: white; border: 1px solid var(--border);
+    border-left: 3px solid var(--bio); border-radius: 0 6px 6px 0;
+    font-size: 0.8rem; color: var(--ink); line-height: 1.6;
+  }
+
+  .moed-produces strong {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--bio); display: block; margin-bottom: 0.3rem;
+  }
+
+  .moed-forbered {
+    margin-top: 0.8rem; padding: 0.9rem 1.1rem;
+    background: #fdf8f0; border: 1px solid rgba(196,113,58,0.2);
+    border-left: 3px solid var(--familie); border-radius: 0 6px 6px 0;
+    font-size: 0.8rem; color: var(--ink); line-height: 1.6;
+  }
+
+  .moed-forbered strong {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--familie); display: block; margin-bottom: 0.3rem;
+  }
+
+  @media (max-width: 540px) {
+    .opgave-body { grid-template-columns: 1fr; }
+    .moed-meta { display: none; }
+  }
+
+  /* ── MØDE BADGE & SCROLL LINKS ── */
+  .moed-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .moed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: white;
+    padding: 0.25rem 0.7rem 0.25rem 0.35rem;
+    border-radius: 20px;
+  }
+
+  .moed-badge .mb-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 700; flex-shrink: 0;
+  }
+
+  .ag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--bio);
+    text-decoration: none;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgba(74,124,111,0.3);
+    border-radius: 20px;
+    background: white;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+
+  .ag-link:hover { background: var(--bio); color: white; border-color: var(--bio); }
+
+  /* ── RELEVANT LÆSNING ── */
+  .laesning-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+  }
+
+  .laesning-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .laesning-category {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin: 1rem 0 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .laesning-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 0.9rem 1.1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+
+  .laesning-item:hover {
+    border-color: var(--bio);
+    background: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .laesning-item .li-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .laesning-item .li-body { flex: 1; }
+
+  .laesning-item .li-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+    line-height: 1.4;
+  }
+
+  .laesning-item .li-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .laesning-item .li-meta {
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .li-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .laesning-item .li-arrow {
+    font-size: 0.8rem;
+    color: var(--muted);
+    flex-shrink: 0;
+    padding-top: 0.2rem;
+    transition: transform 0.15s;
+  }
+
+  .laesning-item:hover .li-arrow { transform: translateX(3px); color: var(--bio); }
+
+  .laesning-section.open .moed-chevron { transform: rotate(180deg); }
+  .laesning-section .moed-body { display: none; }
+  .laesning-section.open .moed-body { display: block; }
+
+  /* ── SEKTION ACCORDION ── */
+  .accordion-section {
+    max-width: 900px;
+    margin: 0 auto 0.6rem;
+  }
+
+  .acc-toggle {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .acc-toggle:hover {
+    background: white;
+    border-color: #ccc;
+  }
+
+  .accordion-section.open .acc-toggle {
+    border-radius: 10px 10px 0 0;
+    border-bottom-color: transparent;
+    background: white;
+  }
+
+  .acc-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  .acc-text { flex: 1; }
+
+  .acc-title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.15rem;
+  }
+
+  .acc-sub {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .acc-chevron {
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .accordion-section.open .acc-chevron {
+    transform: rotate(180deg);
+  }
+
+  .acc-body {
+    display: none;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 1.5rem;
+    background: white;
+  }
+
+  .accordion-section.open .acc-body {
+    display: block;
+  }
+
+  /* Override inner section max-widths inside accordion */
+  .acc-body .section-title,
+  .acc-body .meta-box,
+  .acc-body .moed-badge-row,
+  .acc-body .notice,
+  .acc-body .trin-section,
+  .acc-body .maal-section,
+  .acc-body .process-section,
+  .acc-body .kortlaeg-section,
+  .acc-body .opening-section,
+  .acc-body .lovgivning-box,
+  .acc-body .exercise-wrap,
+  .acc-body .cards-grid,
+  .acc-body .center-visual,
+  .acc-body header {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .acc-body .cards-grid {
+    margin: 0 0 1rem;
+  }
+
+  .acc-body .center-visual {
+    margin: 0 auto 2rem;
+  }
+
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245,242,236,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 48px;
+    margin-bottom: 2rem;
+  }
+
+  .navbar a {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0 0.9rem;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .navbar a:hover {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+
+  .navbar a.active {
+    color: var(--ink);
+    border-bottom-color: #8b1a2e;
+  }
+
+  .navbar .nav-title {
+    font-family: 'Fraunces', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-right: 0.5rem;
+    padding-right: 1rem;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .navbar-scroll {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex: 1;
+  }
+
+  .navbar-scroll::-webkit-scrollbar { display: none; }
+
+  /* ── TILBAGE TIL TOPPEN ── */
+  .back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 200;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    background: #333;
+  }
+
+</style>
+</head>
+<body>
+<div id="top"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <span class="nav-title">Fraværsramme</span>
+  <div class="navbar-scroll">
+    <a href="#rammen">🧩 Arenamodellen</a>
+    <a href="#maalgrupper">🎯 Målgrupper</a>
+    <a href="#trinmodel">📊 Trinmodel</a>
+    <a href="#lovgivning">⚖️ Lovgivning</a>
+    <a href="#processp">💬 Processpørgsmål</a>
+    <a href="#moeder">📅 Mødeplan</a>
+    <a href="#aabning">🛠 Processer og øvelser</a>
+    <a href="#laesning">📚 Relevant læsning</a>
+  </div>
+</nav>
+
+<!-- TILBAGE TIL TOPPEN -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Tilbage til toppen">↑</button>
+
+<!-- INTRO TIL PROJEKTLEDER -->
+<div class="intro-section">
+  <div class="intro-top">
+    <div class="intro-kicker">Til projektlederen · Læs dette først</div>
+    <h2>Dette dokument er et forslag til en <em>arbejdsramme</em> –<br>ikke en endelig løsning.</h2>
+    <p>Du har foran dig en ramme til at lede arbejdsgruppen igennem en systematisk gentænkning af kommunens indsats over for børn med skolefravær. Dokumentet er bygget til at skabe overblik over vores kommende proces. Du kan godt rette direkte i dokumentet, men så gemmes det kun i din egen browser. Varige ændringer i dette dokument skal igennem Claude.</p>
+  </div>
+  <div class="intro-grid">
+    <div class="intro-grid-item">
+      <div class="ig-label">Formål</div>
+      <div class="ig-value">Kortlægge eksisterende indsatser, identificere huller og designe en sammenhængende fremtidig indsats</div>
+    </div>
+    <div class="intro-grid-item">
+      <div class="ig-label">Målgruppe for dokumentet</div>
+      <div class="ig-value">Projektleder og den nedsatte arbejdsgruppe på tværs af afdelinger</div>
+    </div>
+    <div class="intro-grid-item">
+      <div class="ig-label">Grundpræmis</div>
+      <div class="ig-value">Indsatsen matches til barnets behov – ikke til fraværsprocenter eller diagnoser</div>
+    </div>
+    <div class="intro-grid-item">
+      <div class="ig-label">Status</div>
+      <div class="ig-value">Arbejdsudkast · Maj 2026 · Kan redigeres løbende</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(255,255,255,0.08);">
+    <div class="intro-grid-item" style="border-right:1px solid rgba(255,255,255,0.08);">
+      <div class="ig-label">Del 1 · Vidensgrundlag</div>
+      <div class="ig-value">Arenamodellen, målgrupper, trinmodel og kobling til lovgivning. Kan sendes ud som forberedelse inden første møde og læses selvstændigt af alle i arbejdsgruppen.</div>
+    </div>
+    <div class="intro-grid-item">
+      <div class="ig-label">Del 2 · Procesredskab</div>
+      <div class="ig-value">Mødeplan, konkrete øvelser og kortlægningstabel. Bruges aktivt under og mellem møderne. Indeholder direkte links til de relevante elementer fra del 1.</div>
+    </div>
+  </div>
+  <div class="intro-flow">
+    <div class="if-label">Dokumentets opbygning – to dele</div>
+    <div class="flow-steps" style="flex-direction:column;gap:0.8rem;">
+      <div style="display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;">
+        <span style="font-size:0.65rem;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;opacity:0.5;width:60px;flex-shrink:0;">Del 1</span>
+        <div class="flow-step"><span class="fs-num">1</span>Arenamodellen</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="fs-num">2</span>Målgrupper</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="fs-num">3</span>Trinmodel</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="fs-num">4</span>Lovgivning</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="fs-num">5</span>Processpørgsmål</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;">
+        <span style="font-size:0.65rem;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;opacity:0.5;width:60px;flex-shrink:0;">Del 2</span>
+        <div class="flow-step"><span class="fs-num">6</span>Mødeplan</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="fs-num">7</span>Familieinterview</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="fs-num">8</span>Kortlægningsøvelse</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="fs-num">9</span>Relevant læsning</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPGAVEBESKRIVELSE -->
+<div class="opgave-section">
+  <div class="opgave-header">Arbejdsgruppens opgave og leverancer</div>
+  <div class="opgave-body">
+    <div class="opgave-item" style="grid-column: 1 / -1;">
+      <h4>Opgaven</h4>
+      <p>Arbejdsgruppen skal gentænke kommunens samlede indsats over for børn og unge med skolefravær. Det sker ved at kortlægge hvad vi allerede har, identificere huller og overlap på tværs af afdelinger og arenaer – og derefter designe en sammenhængende model der matcher barnets behov frem for fraværsprocenter. Resultatet præsenteres som konkrete anbefalinger til chefniveau/politisk behandling.</p>
+    </div>
+    <div class="opgave-leverancer">
+      <h4>Leverancer til chefniveau/politisk behandling</h4>
+      <div class="lev-tags">
+        <span class="lev-tag">📋 Kortlægning af eksisterende indsatser</span>
+        <span class="lev-tag">🧩 Forslag til samlet indsatsmodel</span>
+        <span class="lev-tag">📌 Konkrete anbefalinger med ansvarsplaceringer</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEKTION DIVIDER -->
+<div class="section-divider" id="del1"><span>Del 1 · Vidensgrundlag</span></div>
+
+<!-- ORBIT VISUAL -->
+<div class="accordion-section" id="rammen">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">🧩</span>
+    <span class="acc-text">
+      <span class="acc-title">Arenamodellen</span>
+      <span class="acc-sub">Barnet i centrum · Fem arenaer · Cirkulær påvirkning</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<header style="max-width:100%;margin:0 0 1.5rem;">
+  <h1>Arenamodellen –<br><em>barnet i centrum</em></h1>
+  <p>Et fælles sprog for arbejdsgruppen. Barnet er omgivet af fem arenaer – de verdener barnet lever i og påvirkes af. Alle arenaer påvirker hinanden – ingen er årsag alene.</p>
+</header>
+
+<div class="meta-box" style="max-width:100%;margin:0 0 1rem;">
+  <strong>Hvad er Arenamodellen?</strong>
+  Arenamodellen viser barnet i centrum omgivet af fem arenaer – de verdener barnet lever i og påvirkes af. Den er ikke et organisationsdiagram; den er et fælles sprog for arbejdsgruppen. Brug den til at tale om barnet på tværs af faggrænser og afdelinger. Arenaerne er cirkulært forbundne: ingen er årsag alene, alle påvirker hinanden.
+</div>
+
+<div class="notice" style="max-width:100%;margin:0 0 1.5rem;">
+  <strong>Vigtig præmis:</strong> Barnets biologiske og psykologiske forudsætninger er <em>ikke</em> en forklaringsmodel der peger indad. De formes af og former alle andre arenaer. Modellen er cirkulær, ikke hierarkisk.
+</div>
+<div class="center-visual">
+  <div class="orbit-wrapper">
+
+    <!-- SVG connecting lines -->
+    <svg class="orbit-svg" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+      <!-- lines from center (240,240) to each arena center -->
+      <!-- bio: top (240, 65) -->
+      <line x1="240" y1="240" x2="240" y2="65" stroke="#1a1a18" stroke-width="1" stroke-dasharray="4 4" opacity="0.15"/>
+      <!-- familie: upper-right (406, 186) -->
+      <line x1="240" y1="240" x2="406" y2="186" stroke="#1a1a18" stroke-width="1" stroke-dasharray="4 4" opacity="0.15"/>
+      <!-- skole: lower-right (343, 382) -->
+      <line x1="240" y1="240" x2="343" y2="382" stroke="#1a1a18" stroke-width="1" stroke-dasharray="4 4" opacity="0.15"/>
+      <!-- fritid: lower-left (137, 382) -->
+      <line x1="240" y1="240" x2="137" y2="382" stroke="#1a1a18" stroke-width="1" stroke-dasharray="4 4" opacity="0.15"/>
+      <!-- kommune: upper-left (74, 186) -->
+      <line x1="240" y1="240" x2="74" y2="186" stroke="#1a1a18" stroke-width="1" stroke-dasharray="4 4" opacity="0.15"/>
+      <!-- pentagon connecting arenas -->
+      <polygon points="240,65 406,186 343,382 137,382 74,186" fill="none" stroke="#1a1a18" stroke-width="1" stroke-dasharray="3 6" opacity="0.08"/>
+    </svg>
+
+    <div class="child-center">
+      <span class="icon">🧒</span>
+      <span>Barnet</span>
+    </div>
+
+    <div class="arena arena-bio" title="Biologiske og psykologiske forudsætninger">
+      <span class="a-icon">🧠</span>
+      <span class="a-label">Bio- & psyk.<br>foruds.</span>
+    </div>
+
+    <div class="arena arena-familie" title="Familie">
+      <span class="a-icon">🏠</span>
+      <span class="a-label">Familie</span>
+    </div>
+
+    <div class="arena arena-skole" title="Skole">
+      <span class="a-icon">🏫</span>
+      <span class="a-label">Skole</span>
+    </div>
+
+    <div class="arena arena-fritid" title="Fritid og netværk">
+      <span class="a-icon">⚽</span>
+      <span class="a-label">Fritid &<br>netværk</span>
+    </div>
+
+    <div class="arena arena-kommune" title="Kommune og system">
+      <span class="a-icon">🏛️</span>
+      <span class="a-label">Kommune<br>& system</span>
+    </div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+<!-- ARENA CARDS -->
+<div class="accordion-section" id="arenaer">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">🗂</span>
+    <span class="acc-text">
+      <span class="acc-title">Arenakort</span>
+      <span class="acc-sub">Arbejdsspørgsmål for hver af de fem arenaer</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<p id="arenaer" class="section-title">Hvad ved vi – og hvad mangler vi?</p>
+<div class="meta-box">
+  <strong>Hvad er dette?</strong>
+  Fem arenakort med arbejdsspørgsmål – ét for hver arena i rammen. Kortene er ikke svar, men spørgsmål der hjælper arbejdsgruppen til at blive klogere på egne blinde vinkler. Brug dem som diskussionsoplæg: læs et spørgsmål op ad gangen og lad gruppen svare frit.
+</div>
+<div class="moed-badge-row">
+  <span class="moed-badge" style="background:#8b1a2e;"><span class="mb-num">1</span> Bruges på møde 1</span>
+  <span style="font-size:0.75rem;color:var(--muted);">Arenakort · 2:15–2:45</span>
+</div>
+<p style="max-width:900px;margin:0 auto 1.5rem;font-size:0.82rem;color:var(--muted);line-height:1.6;">For hver arena stiller vi de samme grundspørgsmål: hvad ser vi, hvad har vi, og hvad mangler? Kortene herunder er arbejdsgruppens udgangspunkt – ikke svar, men spørgsmål der skal hjælpe os til at blive klogere på vores blinde vinkler og vores styrker.</p>
+
+<div class="cards-grid">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-dot" style="background:var(--bio)"></span>
+      <h3>Bio- & psyk. forudsætninger</h3>
+      <span class="card-icon">🧠</span>
+    </div>
+    <div class="card-body">
+      <p class="questions-label">Spørgsmål til gruppen</p>
+      <ul class="q-list">
+        <li>Hvad ved vi om barnets neurobiologiske og psykologiske profil?</li>
+        <li>Hvilke diagnoser og sårbarhedsmønstre ser vi hyppigt?</li>
+        <li>Forstår vi barnets adfærd som kommunikation – ikke som vilje?</li>
+        <li>Har vi tilbud der matcher forskellig sårbarhedsprofil?</li>
+        <li>Hvem i systemet har viden om dette – og deler de den?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-dot" style="background:var(--familie)"></span>
+      <h3>Familie</h3>
+      <span class="card-icon">🏠</span>
+    </div>
+    <div class="card-body">
+      <p class="questions-label">Spørgsmål til gruppen</p>
+      <ul class="q-list">
+        <li>Hvilken rolle spiller familiens egne belastninger?</li>
+        <li>Oplever familien sig som medspiller eller modpart?</li>
+        <li>Hvad støtter vi familien med i dag – og hvad mangler?</li>
+        <li>Er der sammenhæng mellem familiens støtte og barnets fremmøde?</li>
+        <li>Hvem har den primære relation til familien?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-dot" style="background:var(--skole)"></span>
+      <h3>Skole</h3>
+      <span class="card-icon">🏫</span>
+    </div>
+    <div class="card-body">
+      <p class="questions-label">Spørgsmål til gruppen</p>
+      <ul class="q-list">
+        <li>Hvornår opdager skolen fraværet – og hvad gør de?</li>
+        <li>Har læreren redskaber til at handle på bekymring tidligt?</li>
+        <li>Er der fleksible læringsmiljøer for børn i kanten?</li>
+        <li>Hvad er skolens egne bidrag til fraværsårsagerne?</li>
+        <li>Hvordan samarbejder skolen med andre arenaer?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-dot" style="background:var(--fritid)"></span>
+      <h3>Fritid og netværk</h3>
+      <span class="card-icon">⚽</span>
+    </div>
+    <div class="card-body">
+      <p class="questions-label">Spørgsmål til gruppen</p>
+      <ul class="q-list">
+        <li>Har barnet et fritidsliv der giver mening og tilhørsforhold?</li>
+        <li>Kan fritidsarenaen være en bro tilbage til skolen?</li>
+        <li>Hvad sker der med fritidslivet når fraværet eskalerer?</li>
+        <li>Har vi tilbud der fastholder børn socialt uden for skolen?</li>
+        <li>Inddrager vi fritidsvejledere og klubpædagoger?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-dot" style="background:var(--kommune)"></span>
+      <h3>Kommune og system</h3>
+      <span class="card-icon">🏛️</span>
+    </div>
+    <div class="card-body">
+      <p class="questions-label">Spørgsmål til gruppen</p>
+      <ul class="q-list">
+        <li>Hvilke indsatser har vi allerede – og hvem ejer dem?</li>
+        <li>Er der overlap, huller eller modsatrettede indsatser?</li>
+        <li>Hvem koordinerer når et barn berører flere afdelinger?</li>
+        <li>Kan vi byde ind ud fra faglighed – ikke fraværsprocent?</li>
+        <li>Hvad skal til for at indsatsen opleves sammenhængende af barnet?</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+  </div>
+</div>
+<!-- MÅLGRUPPE SPOR -->
+<div class="accordion-section" id="maalgrupper">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">🎯</span>
+    <span class="acc-text">
+      <span class="acc-title">Målgrupper</span>
+      <span class="acc-sub">Tre behovsbaserede målgrupper · Trin 1–3</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<div id="maalgrupper" class="maal-section">
+  <p class="section-title">Målgrupper – ikke defineret af procenter, men af behov</p>
+  <div class="meta-box" style="max-width:100%;margin:0 0 1rem;">
+    <strong>Hvad er dette?</strong>
+    Tre målgrupper der afspejler trinmodellens trin 1–3. De erstatter den traditionelle opdeling efter fraværsprocent med en behovsorienteret beskrivelse af barnets situation. Et barn kan befinde sig på flere trin på én gang – og kan bevæge sig frem og tilbage. Alle fem arenaer er relevante på alle trin; det er intensiteten og koordinationsbehovet der varierer.
+  </div>
+  <p style="font-size:0.82rem;color:var(--muted);line-height:1.6;max-width:640px;margin-bottom:1.2rem;">Vi arbejder med tre målgrupper der svarer til trinmodellens trin 1–3. Målgrupperne er defineret ud fra barnets behov og situationens kompleksitet – ikke ud fra fraværsprocenter. Et barn kan bevæge sig frem og tilbage mellem sporene.</p>
+  <div class="maal-track">
+
+    <div class="maal-col">
+      <span class="m-tag" style="background:var(--forebyg)">Trin 1</span>
+      <h4>Bekymringstegn</h4>
+      <p>Begyndende modstand, uro eller adfærdsændringer. Barnet møder stadig op – men noget er ved at ske. Skolen og familien handler selv med støtte fra eksisterende forebyggende indsatser.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.8rem;">
+        <span class="trin-tag" style="background:var(--bio)">Bio- & psyk.</span>
+        <span class="trin-tag" style="background:var(--familie)">Familie</span>
+        <span class="trin-tag" style="background:var(--skole)">Skole</span>
+        <span class="trin-tag" style="background:var(--fritid)">Fritid & netværk</span>
+        <span class="trin-tag" style="background:var(--kommune)">Kommune</span>
+      </div>
+    </div>
+
+    <div class="maal-col">
+      <span class="m-tag" style="background:var(--skole)">Trin 2</span>
+      <h4>Etableret fravær</h4>
+      <p>Barnet er delvist tilstede. Har kontakt til skolen men er ved at miste fodfæste. Tværfaglig sparring og koordineret plan sættes i gang.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.8rem;">
+        <span class="trin-tag" style="background:var(--bio)">Bio- & psyk.</span>
+        <span class="trin-tag" style="background:var(--familie)">Familie</span>
+        <span class="trin-tag" style="background:var(--skole)">Skole</span>
+        <span class="trin-tag" style="background:var(--fritid)">Fritid & netværk</span>
+        <span class="trin-tag" style="background:var(--kommune)">Kommune</span>
+      </div>
+    </div>
+
+    <div class="maal-col">
+      <span class="m-tag" style="background:var(--kommune)">Trin 3</span>
+      <h4>Komplekst / langvarigt fravær</h4>
+      <p>Barnet er reelt ude af skolen eller sagen er gennemgribende kompleks. Kræver koordineret tværfaglig indsats og klart ejerskab – evt. BUP-samarbejde.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.8rem;">
+        <span class="trin-tag" style="background:var(--bio)">Bio- & psyk.</span>
+        <span class="trin-tag" style="background:var(--familie)">Familie</span>
+        <span class="trin-tag" style="background:var(--skole)">Skole</span>
+        <span class="trin-tag" style="background:var(--fritid)">Fritid & netværk</span>
+        <span class="trin-tag" style="background:var(--kommune)">Kommune</span>
+      </div>
+    </div>
+
+  </div>
+  <p style="font-size:0.75rem;color:var(--muted);margin-top:0.8rem;font-style:italic;">Trin 4 (opfølgning) er ikke en målgruppe, men en løbende fase der gælder på tværs af alle tre trin – se trinmodellen nedenfor.</p>
+</div>
+
+  </div>
+</div>
+<!-- TRINMODEL -->
+<div class="accordion-section" id="trinmodel">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">📊</span>
+    <span class="acc-text">
+      <span class="acc-title">Trinmodel</span>
+      <span class="acc-sub">Gradueret indsatsmodel inspireret af forløbsprogrammerne</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<div id="trinmodel" class="trin-section">
+  <p class="section-title">Gradueret indsatsmodel – inspireret af forløbsprogrammerne</p>
+  <div class="meta-box" style="max-width:100%;margin:0 0 1rem;">
+    <strong>Hvad er dette?</strong>
+    En gradueret indsatsmodel lånt fra Sundhedsstyrelsens forløbsprogrammer (fx ADHD og angst) og oversat til skolefravær. Modellen viser at indsatsen skal skaleres efter kompleksitet – og at man kan bevæge sig i begge retninger. Den er ikke et flow-diagram man følger lineært; det er en forståelsesramme for intensitet.
+  </div>
+  <p class="trin-intro">Modellen er lånt fra Sundhedsstyrelsens forløbsprogrammer (fx ADHD, angst) og oversat til skolefravær. Trinene beskriver <em>intensitet af indsats og koordinationsbehov</em> – ikke fraværsprocent. Dobbeltpilene viser at man kan bevæge sig frem og tilbage. Trin 4 er ikke en afslutning, men en løbende fase.</p>
+
+  <div class="trin-diagram">
+
+    <!-- TOP ROW: Trin 1, connector, Trin 2, connector, Trin 3 -->
+    <div class="trin-row">
+
+      <div class="trin-step">
+        <div class="trin-label-top">Tidlig indsats</div>
+        <div class="trin-circle">
+          <span class="t-small">Trin</span>
+          <span class="t-num">1</span>
+        </div>
+        <div class="trin-body">
+          <h4>Bekymringstegn</h4>
+          <p>Skolen handler selv. Familien inddrages. Eksisterende forebyggende indsatser aktiveres.</p>
+        </div>
+      </div>
+
+      <div class="trin-connector">
+        <div class="arrow-both">
+          <div class="arrow-line arrow-r"></div>
+          <div class="arrow-line arrow-l"></div>
+        </div>
+      </div>
+
+      <div class="trin-step">
+        <div class="trin-label-top">Uddybende vurdering og indsats</div>
+        <div class="trin-circle">
+          <span class="t-small">Trin</span>
+          <span class="t-num">2</span>
+        </div>
+        <div class="trin-body">
+          <h4>Etableret fravær</h4>
+          <p>Tværfaglig sparring. PPR og Børn- og Familierådgivningen inddrages. Koordineret plan.</p>
+        </div>
+      </div>
+
+      <div class="trin-connector">
+        <div class="arrow-both">
+          <div class="arrow-line arrow-r"></div>
+          <div class="arrow-line arrow-l"></div>
+        </div>
+      </div>
+
+      <div class="trin-step">
+        <div class="trin-label-top">Udredning, specialiseret indsats</div>
+        <div class="trin-circle">
+          <span class="t-small">Trin</span>
+          <span class="t-num">3</span>
+        </div>
+        <div class="trin-body">
+          <h4>Komplekst / langvarigt fravær</h4>
+          <p>Koordineret tværfaglig indsats. Specialtilbud. Evt. BUP-samarbejde.</p>
+        </div>
+      </div>
+
+    </div><!-- end trin-row -->
+
+    <!-- DOWN ARROWS + TRIN 4 -->
+    <div style="position:relative; max-width: 648px; margin: 0 auto;">
+
+      <div style="display:flex; justify-content:space-around; align-items:flex-start; position:relative;">
+
+        <div style="flex:1;max-width:200px;display:flex;flex-direction:column;align-items:center;">
+          <div class="down-arrow"></div>
+        </div>
+        <div style="flex:0 0 48px;"></div>
+        <div style="flex:1;max-width:200px;display:flex;flex-direction:column;align-items:center;">
+          <div class="down-arrow"></div>
+        </div>
+        <div style="flex:0 0 48px;"></div>
+        <div style="flex:1;max-width:200px;display:flex;flex-direction:column;align-items:center;">
+          <div class="down-arrow"></div>
+        </div>
+
+        <div style="position:absolute;top:0;left:calc(16.6%);right:calc(16.6%);height:1.5px;background:#8b1a2e;"></div>
+
+      </div>
+
+      <div class="trin-4-wrapper">
+        <div class="trin-step" style="max-width:260px;">
+          <div class="trin-label-top" style="min-height:0;margin-bottom:0.5rem;">Opfølgning</div>
+          <div class="trin-circle" style="width:80px;height:80px;">
+            <span class="t-small">Trin</span>
+            <span class="t-num">4</span>
+          </div>
+          <div class="trin-body">
+            <h4>Løbende opfølgning – for alle trin</h4>
+            <p>Ikke en afslutning, men en tilbagevendende fase. Justerer indsatsen og sikrer at barnet ikke tabes mellem stole.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end down section -->
+
+    <p class="trin-bottom-note">Barnet kan befinde sig på flere trin samtidig på tværs af arenaer. Indsatsen matches til behovet – ikke til fraværsprocenten.</p>
+
+  </div><!-- end trin-diagram -->
+</div>
+
+  </div>
+</div>
+<!-- KOBLING TIL NY LOVGIVNING -->
+<div class="accordion-section" id="lovgivning">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">⚖️</span>
+    <span class="acc-text">
+      <span class="acc-title">Kobling til lovgivning</span>
+      <span class="acc-sub">Ny fraværslovgivning · Januar 2026</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<div id="lovgivning" class="lovgivning-box">
+  <div class="lv-header">
+    <span>📋 Reference</span>
+    <strong>Kobling til ny fraværslovgivning – januar 2026</strong>
+  </div>
+  <div class="lv-body">
+    <div class="meta-box" style="max-width:100%;margin:0 0 1rem;border-left-color:var(--kommune);">
+      <strong>Hvad er dette?</strong>
+      En oversigt der viser hvordan vores indsatsramme forholder sig til den nye fraværslovgivning fra januar 2026. Lovgivningen indfører en trinmodel for skolelederens forpligtelser – vores ramme er bredere og rummer lovkravene, men er ikke begrænset til dem. Brug tabellen til at forklare koblingen til politikere, ledelse og samarbejdspartnere.
+    </div>
+    <p class="lv-intro">Folkeskoleforligskredsen har i januar 2026 indført en trinmodel for skolelederens forpligtelser ved fravær. Vores model opererer på et bredere niveau – den rummer lovgivningens krav, men er ikke begrænset til dem. Tabellen viser koblingen.</p>
+    <table class="lv-table">
+      <thead>
+        <tr>
+          <th>Vores model</th>
+          <th>Lovgivningens trinmodel</th>
+          <th>Hvad tilføjer vores model</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Trin 1<br><span class="lv-badge" style="background:var(--forebyg)">Bekymringstegn</span></td>
+          <td>
+            Trin 1: Ulovligt fravær → skoleleder kontakter straks forældre
+            <div class="lv-law">Eksisterende forpligtelse. Bevares uændret.</div>
+          </td>
+          <td>Vores trin 1 inkluderer alle bekymringstegn – også dem der ikke udløser lovkrav endnu. Familie, fritid og bio-/psyk. arena inddrages fra starten.</td>
+        </tr>
+        <tr>
+          <td>Trin 1–2<br><span class="lv-badge" style="background:var(--skole)">Overgang</span></td>
+          <td>
+            Trin 2: 10 dages fravær i kvartal → skoleleder kontakter forældre
+            <div class="lv-law">Ny forpligtelse fra 2026. Skoleleder kan skønne, at kontakt ikke er relevant.</div>
+          </td>
+          <td>Lovgivningen fokuserer på skolelederens reaktion. Vores model stiller spørgsmålet: hvem else bør handle her – og på tværs af hvilke arenaer?</td>
+        </tr>
+        <tr>
+          <td>Trin 2–3<br><span class="lv-badge" style="background:var(--kommune)">Etableret/komplekst</span></td>
+          <td>
+            Trin 3a: 15 dages fravær → fraværsundervisning med fokus på skoletilknytning<br>
+            Trin 3b: 15 dages fravær pga. skoletilknytning → støtteplan med obligatorisk PPR
+            <div class="lv-law">Ny støtteplan erstatter udvidet meddelelsesbog. Opfølgning min. hver 3. måned.</div>
+          </td>
+          <td>Lovgivningens støtteplan er skolens dokument. Vores model tilføjer kommunens øvrige arenaer og sikrer at støtteplanen ikke bliver endnu en ø.</td>
+        </tr>
+        <tr>
+          <td>Trin 4<br><span class="lv-badge" style="background:var(--muted)">Opfølgning</span></td>
+          <td>
+            Opfølgning på støtteplan mindst hver 3. måned
+            <div class="lv-law">Forældre har ret til at anmode om støtteplan og klage ved afslag.</div>
+          </td>
+          <td>Vores trin 4 gælder på tværs af alle trin – ikke kun ved støtteplan. Opfølgning er en løbende fase, ikke en afslutning.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="lv-note">Lovgivningen understreger eksplicit at støtte ikke kræver en forudgående diagnose – det harmonerer med vores grundpræmis om at indsatsen matches til behov, ikke fraværsprocent eller diagnose. Der er afsat 30 mio. kr. årligt 2026–2029 til et nationalt videnscenter for ufrivilligt skolefravær – relevant at følge.</p>
+  </div>
+</div>
+
+  </div>
+</div>
+<!-- PROCES SPØRGSMÅL -->
+<div class="accordion-section" id="processp">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">💬</span>
+    <span class="acc-text">
+      <span class="acc-title">Processpørgsmål</span>
+      <span class="acc-sub">Seks ankerspørgsmål til arbejdsgruppen</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<div id="processp" class="process-section">
+  <p class="section-title">Spørgsmål til arbejdsgruppen – undervejs i processen</p>
+  <div class="meta-box" style="max-width:100%;margin:0 0 1rem;">
+    <strong>Hvad er dette?</strong>
+    Seks spørgsmål der skal holde arbejdsgruppen på sporet gennem hele forløbet. De er ikke en tjekliste der afkrydses – de er ankre man vender tilbage til. Brug dem til at åbne eller afslutte møder, eller når gruppen er ved at springe til løsninger for hurtigt. Spørgsmål 06 er bevidst udfordrende.
+  </div>
+
+  <div class="exercise-badge">💬 Arbejdsgruppeøvelse 3 · Processpørgsmål</div>
+  <div class="exercise-box" style="margin-bottom:1.5rem;">
+    <div class="ex-purpose">Hold gruppen på sporet – undgå for tidlige løsninger</div>
+    <div class="ex-desc">Brug ét eller to spørgsmål ad gangen – ikke alle seks på én gang. Vælg det spørgsmål der er mest relevant for det møde I er i gang med. Lad der være stille efter spørgsmålet. De bedste svar kommer ikke med det samme.</div>
+    <div class="ex-produces">📌 Producerer: <span>Fælles bevidsthed om processen og dens retning – og en løbende kvalitetssikring af at vi arbejder med det rigtige problem</span></div>
+    <div class="ex-time">⏱ Forventet tid: 10–15 min per spørgsmål</div>
+  </div>
+
+  <p style="font-size:0.82rem;color:var(--muted);line-height:1.6;max-width:640px;margin-bottom:1.5rem;">Disse spørgsmål er ikke en tjekliste – de er ankre. Brug dem løbende til at holde arbejdsgruppen på sporet og undgå at springe til løsninger før problemet er forstået. Spørgsmål 06 er bevidst udfordrende.</p>
+  <div class="pq-grid">
+    <div class="pq-card">
+      <div class="pq-num">01</div>
+      <p>Tager vi udgangspunkt i barnets oplevelse – eller i systemets kategorier?</p>
+    </div>
+    <div class="pq-card">
+      <div class="pq-num">02</div>
+      <p>Kortlægger vi hvad vi <em>har</em> – inden vi beslutter hvad vi <em>mangler</em>?</p>
+    </div>
+    <div class="pq-card">
+      <div class="pq-num">03</div>
+      <p>Hvem ejer koordineringen når et barn er i flere arenaer på én gang?</p>
+    </div>
+    <div class="pq-card">
+      <div class="pq-num">04</div>
+      <p>Hvordan sikrer vi at nye løsninger ikke bare bliver endnu en ø?</p>
+    </div>
+    <div class="pq-card">
+      <div class="pq-num">05</div>
+      <p>Hvad siger børnene og familierne selv om hvad der virker?</p>
+    </div>
+    <div class="pq-card">
+      <div class="pq-num">06</div>
+      <p>Hvornår er en Taskforce svaret – og hvornår er det noget andet?</p>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+<!-- MØDEPLAN -->
+<div class="section-divider" id="del2" style="margin-top:1rem;"><span>Del 2 · Procesredskab</span></div>
+<div id="moeder" class="moeder-section">
+  <p class="section-title">Mødeplan – fire møder, tre leverancer</p>
+  <p class="moeder-intro">Klik på et møde for at folde det ud og se dagsorden, øvelser og hvad mødet skal producere. Møderne bygger på hinanden – kortlægningen fra møde 2 er forudsætningen for designet på møde 3.</p>
+
+  <div class="moed-accordion">
+
+    <!-- MØDE 1 -->
+    <div class="moed-item">
+      <button class="moed-toggle" onclick="toggleMoed(this)">
+        <span class="moed-num" style="background:#8b1a2e;">1</span>
+        <span class="moed-toggle-text">
+          <span class="mt-title">Forstå og forankre</span>
+          <span class="mt-sub">Familiestemme · Situationsbillede · Arenamodellen · Fælles sprog</span>
+        </span>
+        <span class="moed-meta">
+          <span class="moed-time">⏱ 3 timer</span>
+        </span>
+        <span class="moed-chevron">▼</span>
+      </button>
+      <div class="moed-body">
+        <div class="moed-agenda">
+          <div class="agenda-item">
+            <span class="ag-time">0:00–0:20</span>
+            <div class="ag-content">
+              <div class="ag-title">Velkomst og præsentation af arbejdsgruppens medlemmer</div>
+              <div class="ag-desc">Projektlederen byder velkommen og introducerer formålet med arbejdsgruppen. Hvert medlem præsenterer sig kort: navn, afdeling og hvad de bringer med ind i gruppen.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-viden">
+            <span class="ag-time">0:20–0:50</span>
+            <div class="ag-content">
+              <div class="ag-title">📊 Situationsbillede – hvad ved vi om fravær i Norddjurs?</div>
+              <div class="ag-desc">Projektlederen præsenterer et faktabaseret situationsbillede i tre lag:
+                <br><br>
+                <strong>Omfang og profil</strong> – Hvor mange børn har bekymrende fravær i Norddjurs? Hvilke aldersgrupper og skoler er mest berørte? Hvordan har udviklingen været over tid – og hvor ligger vi i forhold til landsgennemsnittet?
+                <br><br>
+                <strong>Økonomi</strong> – Hvad koster fraværet? Udgifter til sygeundervisning og specialtilbud, tabt arbejdsfortjeneste for forældre og de langsigtede konsekvenser for børnene selv.
+                <br><br>
+                <strong>Egne indsatser</strong> – Hvad gør vi allerede? Hvem når vi med de nuværende målrettede indsatser – og hvad ved vi om deres effekt?
+                <br><br>
+                Efterfulgt af kort drøftelse: Hvad overrasker os? Hvad bekræfter det vi allerede vidste?
+              </div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">0:50–1:30</span>
+            <div class="ag-content">
+              <div class="ag-title">🎤 Familieinterview <a class="ag-link" onclick="document.getElementById('aabning').scrollIntoView({behavior:'smooth'})">→ Gå til interviewspørgsmål</a></div>
+              <div class="ag-desc">En familie med erfaring med skolefravær deltager i mødet. Projektlederen faciliterer samtalen med spørgsmålene fra åbningssektionen. Gruppen lytter og noterer – ingen afbryder.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">1:30–1:45</span>
+            <div class="ag-content">
+              <div class="ag-title">💬 Refleksion efter interview</div>
+              <div class="ag-desc">Tre spørgsmål til gruppen: Hvad genkender vi? Hvad overraskede os? Hvad betyder det for vores arbejde?</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-break">
+            <span class="ag-time">1:45–2:00</span>
+            <div class="ag-content">
+              <div class="ag-title">☕ Pause</div>
+            </div>
+          </div>
+          <div class="agenda-item">
+            <span class="ag-time">2:00–2:30</span>
+            <div class="ag-content">
+              <div class="ag-title">Introduktion til Arenamodellen</div>
+              <div class="ag-desc">Projektlederen præsenterer rammen: barnet i centrum, fem arenaer, cirkulær påvirkning. Ingen er årsag alene. Gruppen drøfter: kender vi os selv igen i arenaerne?</div>
+            </div>
+          </div>
+          <div class="agenda-item">
+            <span class="ag-time">2:30–2:55</span>
+            <div class="ag-content">
+              <div class="ag-title">Introduktion til målgrupper og trinmodel</div>
+              <div class="ag-desc">Gennemgang af de tre målgrupper og den graduerede indsatsmodel. Hvad er forskellen på trin 1, 2 og 3 i vores hverdag? Gruppen giver eksempler fra egne erfaringer.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">2:55–3:15</span>
+            <div class="ag-content">
+              <div class="ag-title">Opsamling og forberedelse til møde 2</div>
+              <div class="ag-desc">Hvad tager vi med fra i dag? Projektlederen introducerer hjemmeopgaven til møde 2: hver deltager kortlægger indsatser fra sin egen afdeling inden næste møde.</div>
+            </div>
+          </div>
+        </div>
+        <div class="moed-produces">
+          <strong>📌 Mødet producerer</strong>
+          Fælles faktabaseret udgangspunkt · Fælles sprog og forståelse for Arenamodellen · Første indtryk af huller og styrker på tværs af arenaer · Motivation og ejerskab i gruppen
+        </div>
+        <div class="moed-forbered">
+          <strong>🏠 Forberedelse til møde 1 – projektleder</strong>
+          Saml situationsbilledet inden mødet: fraværsdata fordelt på skoler og aldersgrupper, udgifter til nuværende indsatser og hvad vi ved om deres effekt. Kortlægningstabellen sendes ud til deltagerne så de kan forberede indsatser fra egne afdelinger til møde 2.
+        </div>
+      </div>
+    </div>
+
+    <!-- MØDE 2 -->
+    <div class="moed-item">
+      <button class="moed-toggle" onclick="toggleMoed(this)">
+        <span class="moed-num" style="background:var(--skole);">2</span>
+        <span class="moed-toggle-text">
+          <span class="mt-title">Kortlæg og forstå</span>
+          <span class="mt-sub">Fælles kortlægning · Huller og overlap · Viden fra andre</span>
+        </span>
+        <span class="moed-meta">
+          <span class="moed-time">⏱ 4 timer</span>
+        </span>
+        <span class="moed-chevron">▼</span>
+      </button>
+      <div class="moed-body">
+        <div class="moed-agenda">
+          <div class="agenda-item">
+            <span class="ag-time">0:00–0:15</span>
+            <div class="ag-content">
+              <div class="ag-title">Opsamling fra møde 1</div>
+              <div class="ag-desc">Hvad husker vi? Hvad har vi tænkt på siden sidst? Projektlederen samler trådene kort.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">0:15–0:45</span>
+            <div class="ag-content">
+              <div class="ag-title">🗂 Arenakortene – opvarmning <a class="ag-link" onclick="document.getElementById('arenaer').scrollIntoView({behavior:'smooth'})">→ Gå til arenakort</a></div>
+              <div class="ag-desc">Gruppen arbejder med arenakortenes spørgsmål i makkerpar. Hvert par tager én arena og svarer på: Hvad ser vi? Hvad har vi? Hvad mangler vi? Deles i plenum – bruges som optakt til kortlægningen.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-viden">
+            <span class="ag-time">0:45–1:15</span>
+            <div class="ag-content">
+              <div class="ag-title">🔍 Vidensindslag: Hvad virker på trin 1 og 2?</div>
+              <div class="ag-desc">Kort præsentation (20–25 min) af hvad forskning og praksis viser om tidlig indsats og etableret fravær. Hvad gør andre kommuner? Hvad siger EVA, VIVE eller DCUM? Efterfulgt af kort drøftelse: hvad overrasker os?</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">1:15–2:00</span>
+            <div class="ag-content">
+              <div class="ag-title">📋 Kortlægning – samling og supplering <a class="ag-link" onclick="document.getElementById('kortlaegning').scrollIntoView({behavior:'smooth'})">→ Gå til kortlægningstabel</a></div>
+              <div class="ag-desc">Deltagerne har forberedt indsatser fra egne afdelinger. Nu samles det i tabellen arena for arena. Projektlederen faciliterer: hvad har vi under bio/psyk? Familie? Skole? Alle supplerer og korrigerer.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-break">
+            <span class="ag-time">2:00–2:15</span>
+            <div class="ag-content">
+              <div class="ag-title">☕ Pause</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">2:15–3:15</span>
+            <div class="ag-content">
+              <div class="ag-title">📋 Kortlægning – analyse af huller og overlap <a class="ag-link" onclick="document.getElementById('kortlaegning').scrollIntoView({behavior:'smooth'})">→ Gå til kortlægningstabel</a></div>
+              <div class="ag-desc">Gruppen ser på det samlede billede: Hvor er der huller? Hvor er der overlap eller uklarhed om ejerskab? Hvad er der for meget af – og hvad mangler helt? Notér direkte i tabellen.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">3:15–3:45</span>
+            <div class="ag-content">
+              <div class="ag-title">💬 Processpørgsmål – midtvejstjek <a class="ag-link" onclick="document.getElementById('processp').scrollIntoView({behavior:'smooth'})">→ Gå til processpørgsmål</a></div>
+              <div class="ag-desc">Brug ét eller to processpørgsmål fra dokumentet til at kvalitetssikre: Tager vi udgangspunkt i barnets oplevelse? Kortlægger vi hvad vi har – inden vi beslutter hvad vi mangler?</div>
+            </div>
+          </div>
+          <div class="agenda-item">
+            <span class="ag-time">3:45–4:00</span>
+            <div class="ag-content">
+              <div class="ag-title">Opsamling og forberedelse til møde 3</div>
+              <div class="ag-desc">Hvad er de tre vigtigste fund fra kortlægningen? Projektlederen introducerer opgaven til møde 3: tænk over hvad der skal til for at fylde de huller vi har fundet.</div>
+            </div>
+          </div>
+        </div>
+        <div class="moed-produces">
+          <strong>📌 Mødet producerer</strong>
+          Udfyldt kortlægningstabel · Overblik over huller og overlap · Fælles forståelse af hvad vi allerede har
+        </div>
+        <div class="moed-forbered">
+          <strong>🏠 Forberedelse til møde 3</strong>
+          Tænk over: Hvad skal der til for at fylde de huller vi har identificeret? Kom med mindst ét konkret forslag til en ny eller justeret indsats fra dit fagområde.
+        </div>
+      </div>
+    </div>
+
+    <!-- MØDE 3 -->
+    <div class="moed-item">
+      <button class="moed-toggle" onclick="toggleMoed(this)">
+        <span class="moed-num" style="background:var(--bio);">3</span>
+        <span class="moed-toggle-text">
+          <span class="mt-title">Design og prioritér</span>
+          <span class="mt-sub">Nye indsatser · Tovholderfunktion · Ansvarsplaceringer · Viden fra andre kommuner</span>
+        </span>
+        <span class="moed-meta">
+          <span class="moed-time">⏱ 4 timer</span>
+        </span>
+        <span class="moed-chevron">▼</span>
+      </button>
+      <div class="moed-body">
+        <div class="moed-agenda">
+          <div class="agenda-item">
+            <span class="ag-time">0:00–0:15</span>
+            <div class="ag-content">
+              <div class="ag-title">Opsamling fra møde 2</div>
+              <div class="ag-desc">Projektlederen præsenterer de vigtigste fund fra kortlægningen. Hvad er vores tre største huller? Hvad er vores tre største styrker?</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-viden">
+            <span class="ag-time">0:15–0:45</span>
+            <div class="ag-content">
+              <div class="ag-title">🔍 Vidensindslag: Hvad gør andre kommuner på trin 3?</div>
+              <div class="ag-desc">Kort præsentation af erfaringer fra kommuner der har arbejdet med komplekst og langvarigt fravær. Hvad er Taskforce-modeller? Hvad virker – og hvad virker ikke? Drøftelse: hvad kan vi lære?</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">0:45–1:30</span>
+            <div class="ag-content">
+              <div class="ag-title">🧩 Design – nye og justerede indsatser</div>
+              <div class="ag-desc">Gruppen arbejder i mindre grupper med hvert sit hul fra kortlægningen: Hvad skal der til? Hvem skal eje det? Hvad kræver det af ressourcer og samarbejde? Præsenteres i plenum.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-break">
+            <span class="ag-time">1:30–1:45</span>
+            <div class="ag-content">
+              <div class="ag-title">☕ Pause</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">1:45–2:30</span>
+            <div class="ag-content">
+              <div class="ag-title">🧩 Samlet model – første udkast <a class="ag-link" onclick="document.getElementById('trinmodel').scrollIntoView({behavior:'smooth'})">→ Gå til trinmodel</a></div>
+              <div class="ag-desc">Projektlederen samler forslagene i et samlet billede: Hvad er vores model? Hvem gør hvad på trin 1, 2 og 3? Gruppen justerer og supplerer.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">2:30–3:15</span>
+            <div class="ag-content">
+              <div class="ag-title">🔑 Tovholderfunktionen – hvem koordinerer de komplekse sager?</div>
+              <div class="ag-desc">Et selvstændigt designspørgsmål med direkte konsekvenser for modellen. Gruppen drøfter:
+                <br><br>
+                <strong>Hvem?</strong> – Hvilken faglig profil skal en tovholder have? Skal det være én fast funktion eller en rolle der kan varetages af flere?
+                <br><br>
+                <strong>Fra hvilken afdeling?</strong> – PPR, Børn- og Familierådgivningen, skolen selv – eller et tværgående team? Hvad taler for og imod?
+                <br><br>
+                <strong>Hvornår?</strong> – På hvilket tidspunkt i et forløb overtager tovholderen? Hvad udløser det – et bestemt trin, en bestemt kompleksitet?
+                <br><br>
+                <strong>Hvordan?</strong> – Hvad er tovholderens konkrete opgaver? Koordinering, kommunikation med familie, opfølgning? Og hvad er tovholderen <em>ikke</em> ansvarlig for?
+              </div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">3:15–3:45</span>
+            <div class="ag-content">
+              <div class="ag-title">📌 Første udkast til anbefalinger</div>
+              <div class="ag-desc">Gruppen formulerer de første anbefalinger til chefniveau/politisk behandling. Hvad er de tre vigtigste ting vi anbefaler? Hvad kræver en beslutning? Hvad kan vi selv sætte i gang?</div>
+            </div>
+          </div>
+          <div class="agenda-item">
+            <span class="ag-time">3:45–4:00</span>
+            <div class="ag-content">
+              <div class="ag-title">Opsamling og forberedelse til møde 4</div>
+              <div class="ag-desc">Hvad mangler for at anbefalingerne er klar til chefniveau/politisk behandling? Projektlederen sender et udkast til anbefalinger til gruppen inden møde 4.</div>
+            </div>
+          </div>
+        </div>
+        <div class="moed-produces">
+          <strong>📌 Mødet producerer</strong>
+          Første udkast til samlet indsatsmodel · Beslutning om tovholderfunktion · Liste over nye og justerede indsatser med ejerskab · Første udkast til anbefalinger
+        </div>
+        <div class="moed-forbered">
+          <strong>🏠 Forberedelse til møde 4</strong>
+          Læs udkastet til anbefalinger som projektlederen sender ud. Notér hvad du er enig i, hvad du er uenig i, og hvad der mangler. Kom klar til at prioritere og beslutte.
+        </div>
+      </div>
+    </div>
+
+    <!-- MØDE 4 -->
+    <div class="moed-item">
+      <button class="moed-toggle" onclick="toggleMoed(this)">
+        <span class="moed-num" style="background:var(--kommune);">4</span>
+        <span class="moed-toggle-text">
+          <span class="mt-title">Beslut og formulér</span>
+          <span class="mt-sub">Færdiggør anbefalinger · Kvalitetssikring · Klar til chefniveau/politisk behandling</span>
+        </span>
+        <span class="moed-meta">
+          <span class="moed-time">⏱ 3 timer</span>
+        </span>
+        <span class="moed-chevron">▼</span>
+      </button>
+      <div class="moed-body">
+        <div class="moed-agenda">
+          <div class="agenda-item">
+            <span class="ag-time">0:00–0:20</span>
+            <div class="ag-content">
+              <div class="ag-title">Opsamling og status</div>
+              <div class="ag-desc">Projektlederen præsenterer udkastet til anbefalinger. Gruppen deler reaktioner: hvad er vi enige om? Hvad er vi uenige om? Hvad mangler?</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">0:20–1:15</span>
+            <div class="ag-content">
+              <div class="ag-title">📌 Færdiggørelse af anbefalinger</div>
+              <div class="ag-desc">Gruppen arbejder systematisk igennem anbefalingerne: Er de konkrete nok? Er ansvaret klart? Er de realistiske? Er der noget vi mangler mod til at anbefale? Justér og skærp.</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">1:15–1:45</span>
+            <div class="ag-content">
+              <div class="ag-title">💬 Kvalitetssikring med processpørgsmålene <a class="ag-link" onclick="document.getElementById('processp').scrollIntoView({behavior:'smooth'})">→ Gå til processpørgsmål</a></div>
+              <div class="ag-desc">Brug processpørgsmålene som en final tjek: Tager anbefalingerne udgangspunkt i barnets oplevelse? Sikrer de at indsatserne ikke bare bliver endnu en ø? Hvornår er en Taskforce svaret?</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-break">
+            <span class="ag-time">1:45–2:00</span>
+            <div class="ag-content">
+              <div class="ag-title">☕ Pause</div>
+            </div>
+          </div>
+          <div class="agenda-item ag-exercise">
+            <span class="ag-time">2:00–2:30</span>
+            <div class="ag-content">
+              <div class="ag-title">🎯 Prioritering og beslutning</div>
+              <div class="ag-desc">Hvad anbefaler vi sendes til chefniveau/politisk behandling? Hvad kan vi sætte i gang selv uden politisk eller chefbeslutning? Hvad kræver yderligere afklaring? Gruppen prioriterer og beslutter.</div>
+            </div>
+          </div>
+          <div class="agenda-item">
+            <span class="ag-time">2:30–3:00</span>
+            <div class="ag-content">
+              <div class="ag-title">Afslutning og næste skridt</div>
+              <div class="ag-desc">Hvad er projektlederens næste skridt? Hvornår præsenteres anbefalingerne til chefniveau/politisk behandling? Hvad sker der efter? Gruppen evaluerer forløbet kort: hvad gik godt, hvad kunne have været bedre?</div>
+            </div>
+          </div>
+        </div>
+        <div class="moed-produces">
+          <strong>📌 Mødet producerer</strong>
+          Færdige anbefalinger til chefniveau/politisk behandling · Prioriteret liste over beslutninger der kræves · Klart næste skridt og tidsplan for implementering
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end accordion -->
+</div>
+
+<!-- ÅBNINGSSEKTION: FØRSTE MØDE -->
+<div style="max-width:900px;margin:0 auto 1.5rem;">
+  <p class="section-title">Processer og øvelser</p>
+  <p style="font-size:0.82rem;color:var(--muted);line-height:1.6;max-width:640px;">De konkrete øvelser og processer der bruges på møderne. Hver øvelse er koblet til et specifikt møde og tidspunkt i dagsordenen – brug pilene i mødeplanen til at navigere direkte hertil.</p>
+</div>
+<div class="accordion-section" id="aabning">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">🎤</span>
+    <span class="acc-text">
+      <span class="acc-title">Familieinterview</span>
+      <span class="acc-sub">Øvelse til møde 1 · Åbning · 0:00–1:00</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<div id="aabning" class="opening-section">
+  <div class="opening-label">Første arbejdsgruppemøde · Åbning</div>
+
+<div class="meta-box" style="margin: 0 0 1.5rem; max-width:100%;">
+  <strong>Hvad er dette?</strong>
+  Det første arbejdsgruppemøde indledes med en direkte samtale med en familie der har erfaring med skolefravær. Formålet er at forankre arbejdet i et konkret menneskeligt perspektiv – inden gruppen arbejder med modeller og kortlægning. Samtalen faciliteres af projektlederen med spørgsmålene herunder.
+</div>
+
+<div class="moed-badge-row">
+  <span class="moed-badge" style="background:#8b1a2e;"><span class="mb-num">1</span> Bruges på møde 1</span>
+  <span style="font-size:0.75rem;color:var(--muted);">Åbning · 0:00–1:00</span>
+</div>
+
+<div class="exercise-badge">🎤 Arbejdsgruppeøvelse 1 · Familieinterview</div>
+<div class="exercise-box" style="margin-bottom:1.2rem;">
+  <div class="ex-purpose">Åbn mødet med en levende familiestemme</div>
+  <div class="ex-desc">En familie der har haft et barn med skolefravær inviteres til at deltage i starten af mødet. Projektlederen faciliterer en åben samtale med udgangspunkt i spørgsmålene herunder. Resten af gruppen lytter og noterer.</div>
+  <div class="ex-produces">📌 Producerer: <span>Fælles afsæt og forståelse for hvad det faktisk kræves af familier og børn – bruges aktivt i den efterfølgende refleksion</span></div>
+  <div class="ex-time">⏱ Forventet tid: 30–45 min inkl. refleksion</div>
+</div>
+
+  <!-- Velkomst til familien -->
+  <div class="family-welcome">
+    <div class="fw-tag">Til familien – læs højt eller vis på skærm</div>
+    <h2>Tak fordi I er her.<br><em>Det betyder mere end I aner.</em></h2>
+    <p>Vi er ved at gentænke den måde vores kommune støtter børn og familier der kæmper med skolefravær. Vi har modeller og tal – men vi mangler det vigtigste: hvad det faktisk føles som at stå i det. Det er derfor vi har inviteret jer. Der er ingen rigtige eller forkerte svar. Vi lytter.</p>
+  </div>
+
+  <!-- Interviewspørgsmål -->
+  <div class="interview-card">
+    <div class="ic-header">
+      <span class="ic-dot"></span>
+      <h3>Spørgsmål til samtalen</h3>
+      <span class="ic-note">Til facilitatoren – følg samtalen, ikke skemaet</span>
+    </div>
+    <div class="ic-body">
+      <ul class="ic-qs">
+        <li>
+          <span class="q-num">1</span>
+          <span class="q-text">
+            Kan I prøve at fortælle os – hvornår mærkede I første gang at noget var anderledes?
+            <span class="q-hint">Lad dem fortælle frit. Afbryd ikke. Følg det de bringer op.</span>
+          </span>
+        </li>
+        <li>
+          <span class="q-num">2</span>
+          <span class="q-text">
+            Hvornår kom skolen eller kommunen ind i billedet – og hvordan oplevede I det?
+            <span class="q-hint">Lyt efter: føltes det som hjælp eller kontrol?</span>
+          </span>
+        </li>
+        <li>
+          <span class="q-num">3</span>
+          <span class="q-text">
+            Var der nogen der tog ansvar for at koordinere det hele – eller faldt noget mellem to stole?
+          </span>
+        </li>
+        <li>
+          <span class="q-num">4</span>
+          <span class="q-text">
+            Hvad var den mest hjælpsomme ting nogen gjorde – stort eller småt?
+            <span class="q-hint">Hvis de nævner en person: hvad gjorde de konkret?</span>
+          </span>
+        </li>
+        <li>
+          <span class="q-num">5</span>
+          <span class="q-text">
+            Hvornår følte I jer alene med det?
+          </span>
+        </li>
+        <li>
+          <span class="q-num">6</span>
+          <span class="q-text">
+            Hvad skulle vi have forstået – som vi måske ikke forstod?
+            <span class="q-hint">Lad der være stille. Giv dem tid til at tænke.</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Refleksion for gruppen -->
+  <div class="reflection-card">
+    <div class="rc-label">Når familien er gået – refleksion for arbejdsgruppen</div>
+    <ul class="rc-qs">
+      <li>Hvad genkender vi fra vores hverdag – og hvad overraskede os?</li>
+      <li>Hvornår i forløbet kunne vi have grebet ind anderledes?</li>
+      <li>Hvad betyder det vi hørte for den indsatsmodel vi er ved at bygge?</li>
+    </ul>
+  </div>
+
+</div>
+
+  </div>
+</div>
+<!-- KORTLÆGNING AF EKSISTERENDE INDSATSER -->
+<div class="accordion-section" id="kortlaegning">
+  <button class="acc-toggle" onclick="toggleAcc(this)">
+    <span class="acc-icon">📋</span>
+    <span class="acc-text">
+      <span class="acc-title">Kortlægning af eksisterende indsatser</span>
+      <span class="acc-sub">Øvelse til møde 2 · Udfyldes i fællesskab</span>
+    </span>
+    <span class="acc-chevron">▼</span>
+  </button>
+  <div class="acc-body">
+
+<div id="kortlaegning" class="kortlaeg-section">
+  <p class="section-title">Hvad har vi allerede? – kortlægning af eksisterende indsatser</p>
+  <div class="meta-box" style="max-width:100%;margin:0 0 1rem;">
+    <strong>Hvad er dette?</strong>
+    Den centrale arbejdsøvelse i processen. Tabellen kortlægger kommunens eksisterende indsatser på tværs af arenaer og trin. Formålet er ikke at vurdere indsatserne – men at skabe et fælles overblik. Hullerne og overlappene viser sig i tabellen og peger på hvor der er behov for ny eller justeret indsats. Ingen indsats har en privilegeret plads; alle vurderes på lige fod.
+  </div>
+
+  <div class="moed-badge-row">
+    <span class="moed-badge" style="background:var(--skole);"><span class="mb-num">2</span> Bruges på møde 2</span>
+    <span style="font-size:0.75rem;color:var(--muted);">Kortlægning · 0:45–2:45</span>
+  </div>
+
+  <div class="exercise-badge">📋 Arbejdsgruppeøvelse 2 · Kortlægning</div>
+  <div class="exercise-box" style="margin-bottom:1.5rem;">
+    <div class="ex-purpose">Skab fælles overblik over eksisterende indsatser</div>
+    <div class="ex-desc">Arbejdsgruppen udfylder tabellen i fællesskab – én arena ad gangen. For hver celle: hvilke indsatser har vi, hvem ejer dem, og hvem retter de sig mod? Klik direkte i cellerne og skriv. Indholdet gemmes automatisk i browseren.</div>
+    <div class="ex-produces">📌 Producerer: <span>Et overblik over eksisterende indsatser samt synlige huller og overlap – grundlaget for at designe fremtidige indsatser</span></div>
+    <div class="ex-time">⏱ Forventet tid: 60–90 min · Kan fordeles over flere møder</div>
+  </div>
+
+  <p class="kortlaeg-intro">Inden vi designer noget nyt, kortlægger vi hvad der allerede eksisterer. Ingen indsats har en privilegeret plads i modellen – alle vurderes på lige fod. For hver arena og hvert trin: hvad tilbyder vi, hvem ejer det, og hvem retter det sig mod?</p>
+
+  <div class="kortlaeg-table-wrap">
+    <table class="kortlaeg">
+      <thead>
+        <tr>
+          <th>Arena</th>
+          <th class="col-trin1">Trin 1 – Bekymringstegn<br><span style="font-weight:300;opacity:0.7;">Tidlig indsats</span></th>
+          <th class="col-trin2">Trin 2 – Etableret fravær<br><span style="font-weight:300;opacity:0.7;">Uddybende vurdering</span></th>
+          <th class="col-trin3">Trin 3 – Komplekst fravær<br><span style="font-weight:300;opacity:0.7;">Specialiseret indsats</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🧠 Bio- &amp; psyk. forudsætninger
+            <div style="font-size:0.68rem;color:var(--muted);font-weight:300;margin-top:0.4rem;line-height:1.5;">Fx: udredning og screening, psykologsamtaler, behandling via PPR/BUP, vejledning til voksne om barnets profil (Low Arousal, autisme, ADHD)</div>
+          </td>
+          <td class="col-trin1 editable" contenteditable="true" data-key="bio-t1" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin2 editable" contenteditable="true" data-key="bio-t2" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin3 editable" contenteditable="true" data-key="bio-t3" data-placeholder="Skriv indsatser her…"></td>
+        </tr>
+        <tr>
+          <td>🏠 Familie
+            <div style="font-size:0.68rem;color:var(--muted);font-weight:300;margin-top:0.4rem;line-height:1.5;">Fx: forældrevejledning, familiebehandling, støtte-kontaktperson, netværksmøder, økonomisk rådgivning, aflastning</div>
+          </td>
+          <td class="col-trin1 editable" contenteditable="true" data-key="familie-t1" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin2 editable" contenteditable="true" data-key="familie-t2" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin3 editable" contenteditable="true" data-key="familie-t3" data-placeholder="Skriv indsatser her…"></td>
+        </tr>
+        <tr>
+          <td>🏫 Skole
+            <div style="font-size:0.68rem;color:var(--muted);font-weight:300;margin-top:0.4rem;line-height:1.5;">Fx: tidlig opsporing, kontaktlærerordning, fleksible mødetider, deltagelse i dele af skoledagen, hjemmeundervisning, AKT-vejledning</div>
+          </td>
+          <td class="col-trin1 editable" contenteditable="true" data-key="skole-t1" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin2 editable" contenteditable="true" data-key="skole-t2" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin3 editable" contenteditable="true" data-key="skole-t3" data-placeholder="Skriv indsatser her…"></td>
+        </tr>
+        <tr>
+          <td>⚽ Fritid og netværk
+            <div style="font-size:0.68rem;color:var(--muted);font-weight:300;margin-top:0.4rem;line-height:1.5;">Fx: klubtilbud, fritidsvejledning, frivillige mentorer, foreningsdeltagelse, sociale væresteder, ferietilbud</div>
+          </td>
+          <td class="col-trin1 editable" contenteditable="true" data-key="fritid-t1" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin2 editable" contenteditable="true" data-key="fritid-t2" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin3 editable" contenteditable="true" data-key="fritid-t3" data-placeholder="Skriv indsatser her…"></td>
+        </tr>
+        <tr>
+          <td>🏛️ Kommune og system
+            <div style="font-size:0.68rem;color:var(--muted);font-weight:300;margin-top:0.4rem;line-height:1.5;">Fx: tværfaglige møder, koordinerende sagsbehandling, handleplaner, Taskforce, samarbejde med BUP, specialpædagogiske tilbud</div>
+          </td>
+          <td class="col-trin1 editable" contenteditable="true" data-key="kommune-t1" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin2 editable" contenteditable="true" data-key="kommune-t2" data-placeholder="Skriv indsatser her…"></td>
+          <td class="col-trin3 editable" contenteditable="true" data-key="kommune-t3" data-placeholder="Skriv indsatser her…"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="kortlaeg-actions">
+    <button class="ka-btn ka-save" onclick="saveTable()">💾 Gem indhold</button>
+    <button class="ka-btn ka-clear" onclick="clearTable()">🗑 Ryd alt</button>
+    <span class="ka-status" id="saveStatus"></span>
+  </div>
+
+  <p class="kortlaeg-note">Klik direkte i en celle og skriv. Indholdet gemmes i browseren – det er der næste gang du åbner filen på samme computer. Brug "Gem indhold" for at sikre det er gemt.</p>
+</div>
+
+  </div>
+</div>
+<!-- RELEVANT LÆSNING -->
+<div id="laesning" class="laesning-section">
+  <button class="moed-toggle" onclick="this.closest('.laesning-section').classList.toggle('open')" style="width:100%;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.4rem;display:flex;align-items:center;gap:1rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:0.6rem;">
+    <span style="font-size:1.2rem;">📚</span>
+    <span style="flex:1;text-align:left;">
+      <span style="font-size:0.95rem;font-weight:500;color:var(--ink);display:block;margin-bottom:0.15rem;">Relevant læsning</span>
+      <span style="font-size:0.75rem;color:var(--muted);">Rapporter, undersøgelser og officielle dokumenter på skolefraværsområdet</span>
+    </span>
+    <span class="moed-chevron" style="font-size:0.8rem;color:var(--muted);transition:transform 0.25s;">▼</span>
+  </button>
+
+  <div class="moed-body" style="padding:0;">
+  <div class="meta-box" style="max-width:100%;margin:0 0 1rem;">
+    <strong>Hvad er dette?</strong>
+    En samling af de vigtigste rapporter, undersøgelser og officielle dokumenter på skolefraværsområdet. Brug dem som baggrundsviden inden møderne – særligt vidensindslaget på møde 2 og 3 kan med fordel trække på disse kilder.
+  </div>
+
+  <div class="laesning-grid">
+
+    <div class="laesning-category">Lovgivning og politiske aftaler</div>
+
+    <a class="laesning-item" href="https://uvm.dk/media/mywg2nzj/aftale-om-nye-regler-for-fravaer-og-specialundervisning-i-folkeskolen.pdf" target="_blank">
+      <span class="li-icon">⚖️</span>
+      <div class="li-body">
+        <div class="li-title">Aftale om nye regler for fravær og specialundervisning i folkeskolen</div>
+        <div class="li-desc">Folkeskoleforligskredsens aftale fra januar 2026 der indfører den nye trinmodel for skolelederens forpligtelser og støtteplaner. Grundlag for vores lovgivningskobling i dette dokument.</div>
+        <div class="li-meta"><span class="li-tag">UVM · 2026</span><span class="li-tag">Lovgivning</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <a class="laesning-item" href="https://www.uvm.dk/-/media/filer/uvm/aktuelt/pdf25/oktober/251006-national-handlingsplan-for-boern-og-unge-med-langvarigt-bekymrende-fravaer-.pdf" target="_blank">
+      <span class="li-icon">📋</span>
+      <div class="li-body">
+        <div class="li-title">National handlingsplan for børn og unge med langvarigt bekymrende fravær – del 1</div>
+        <div class="li-desc">Regeringens 22 initiativer på tværs af undervisnings-, social- og sundhedsområdet. Del 2 forventes i 2026 når VIVEs undersøgelse er færdig. Vigtig kontekst for arbejdsgruppens designfase.</div>
+        <div class="li-meta"><span class="li-tag">UVM · Oktober 2025</span><span class="li-tag">Politik</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <div class="laesning-category">Tal og kortlægning</div>
+
+    <a class="laesning-item" href="https://www.vive.dk/da/udgivelser/folkeskoleelever-har-vaesentligt-hoejere-fravaer-end-foer-corona-kx08ne5z/" target="_blank">
+      <span class="li-icon">📊</span>
+      <div class="li-body">
+        <div class="li-title">Folkeskoleelever har væsentligt højere fravær end før corona</div>
+        <div class="li-desc">VIVEs analyse af fraværsudviklingen 2014–2025 fordelt på fraværstyper og regioner. Viser at niveauet fortsat ligger markant over pre-corona. Nyttig til at illustrere problemets omfang på møde 1.</div>
+        <div class="li-meta"><span class="li-tag">VIVE · Januar 2026</span><span class="li-tag">Data</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <a class="laesning-item" href="https://uvm.dk/aktuelt/nyheder/2025/december/251217-nye-tal-hver-femte-elev-har-over-ti-procent-fravaer/" target="_blank">
+      <span class="li-icon">📈</span>
+      <div class="li-body">
+        <div class="li-title">Nye tal: Hver femte elev har over ti procent fravær</div>
+        <div class="li-desc">Officielle fraværstal for skoleåret 2024/2025 fra Børne- og Undervisningsministeriet. 21,4% af eleverne over 10% fravær – 35,7% på specialskoler. Aktuelle tal til vidensindslaget på møde 2.</div>
+        <div class="li-meta"><span class="li-tag">UVM · December 2025</span><span class="li-tag">Data</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <a class="laesning-item" href="https://www.uvm.dk/aktuelt/nyheder/uvm/2024/dec/241219-resultater-af-ny-undersoegelse-saadan-haandterer-kommuner-langvarigt-fravaer--tilsyn-med" target="_blank">
+      <span class="li-icon">🏛️</span>
+      <div class="li-body">
+        <div class="li-title">Sådan håndterer kommuner langvarigt fravær, sygeundervisning og børn uden for skoletilbud</div>
+        <div class="li-desc">Styrelsen for Undervisning og Kvalitets undersøgelse af kommunernes praksis i 2024. Viser stigende behov for sygeundervisning og hjemmeundervisning. Relevant til kortlægning og møde 3.</div>
+        <div class="li-meta"><span class="li-tag">STUK · December 2024</span><span class="li-tag">Kommuner</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <div class="laesning-category">Hvad virker – forskning og praksis</div>
+
+    <a class="laesning-item" href="https://bornsvilkar.dk/skolens-tomme-stole/" target="_blank">
+      <span class="li-icon">📖</span>
+      <div class="li-body">
+        <div class="li-title">Skolens tomme stole – skolefravær set fra barnets og familiens perspektiv</div>
+        <div class="li-desc">Børns Vilkårs rapport der sætter familieop levelsen i centrum: lange ventetider, skiftende sagsbehandlere og manglende koordinering. Stærk pendant til familieinterviewet på møde 1.</div>
+        <div class="li-meta"><span class="li-tag">Børns Vilkår</span><span class="li-tag">Familieperspektiv</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <a class="laesning-item" href="https://www.eva.dk/grundskole/saadan-arbejder-kommuner-skoler-styrke-skoleelevers-motivation-mindske-fravaeret" target="_blank">
+      <span class="li-icon">🔍</span>
+      <div class="li-body">
+        <div class="li-title">Sådan arbejder kommuner og skoler med at styrke motivation og mindske fraværet</div>
+        <div class="li-desc">EVAs kortlægning af praksis i 21 kommuner. Viser at fravær ses som symptom på bagvedliggende udfordringer og kræver tilpassede løsninger. Direkte relevant til vidensindslaget på møde 2.</div>
+        <div class="li-meta"><span class="li-tag">EVA · 2022</span><span class="li-tag">Kommunepraksis</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <a class="laesning-item" href="https://www.vive.dk/da/nyheder-og-debat/2024/fald-i-skolefravaer-efter-understoettende-indsats/" target="_blank">
+      <span class="li-icon">✅</span>
+      <div class="li-body">
+        <div class="li-title">Fald i skolefravær efter understøttende indsats</div>
+        <div class="li-desc">VIVEs evaluering af indsatser på 188 skoler i 23 kommuner efter covid-19. Positive effekter særligt for de yngste elever. Konkret eksempel på hvad tidlig indsats kan flytte – godt til møde 2.</div>
+        <div class="li-meta"><span class="li-tag">VIVE · August 2024</span><span class="li-tag">Evidens</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <div class="laesning-category">At følge fremover</div>
+
+    <a class="laesning-item" href="https://uvm.dk/aktuelt/nyheder/2026/januar/260113-nyt-videnscenter-skal-hjaelpe-kommuner-og-skoler-med-at-komme-skolefravaer-til-livs/" target="_blank">
+      <span class="li-icon">🔭</span>
+      <div class="li-body">
+        <div class="li-title">Nyt nationalt videnscenter for ufrivilligt skolefravær</div>
+        <div class="li-desc">Videnscenteret etableres med 30 mio. kr. årligt 2026–2029 og skal være Danmarks centrale faglige autoritet på området. Skal hjælpe kommuner med at omsætte viden til konkret praksis. Hold øje med dette.</div>
+        <div class="li-meta"><span class="li-tag">UVM · Januar 2026</span><span class="li-tag">Kommende ressource</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+    <a class="laesning-item" href="https://bornsvilkar.dk/svigtrapport-2025/" target="_blank">
+      <span class="li-icon">📑</span>
+      <div class="li-body">
+        <div class="li-title">Svigtrapport 2025 – Børns Vilkår</div>
+        <div class="li-desc">Årsrapport der belyser 12 former for svigt af børn i Danmark, herunder skolefravær. I 2023/2024 havde 21,6% af grundskoleelever over 10% fravær. Anbefaler tidlig opsporing og tværfagligt samarbejde.</div>
+        <div class="li-meta"><span class="li-tag">Børns Vilkår · November 2025</span><span class="li-tag">Baggrund</span></div>
+      </div>
+      <span class="li-arrow">→</span>
+    </a>
+
+  </div><!-- end laesning-grid -->
+  </div><!-- end moed-body -->
+</div>
+
+<footer>
+  <span>Arbejdsramme</span>
+  <span>Udkast til drøftelse · Maj 2026</span>
+</footer>
+
+<script>
+  function toggleAcc(btn) {
+    btn.closest('.accordion-section').classList.toggle('open');
+  }
+
+  function toggleMoed(btn) {
+    const item = btn.closest('.moed-item');
+    item.classList.toggle('open');
+  }
+
+  const STORAGE_KEY = 'fraværsramme_kortlaeg_v1';
+
+  function saveTable() {
+    const data = {};
+    document.querySelectorAll('td.editable').forEach(td => {
+      data[td.dataset.key] = td.innerHTML;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    const status = document.getElementById('saveStatus');
+    status.textContent = '✓ Gemt';
+    status.classList.add('visible');
+    setTimeout(() => status.classList.remove('visible'), 2500);
+  }
+
+  function loadTable() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    document.querySelectorAll('td.editable').forEach(td => {
+      if (data[td.dataset.key] !== undefined) {
+        td.innerHTML = data[td.dataset.key];
+      }
+    });
+  }
+
+  function clearTable() {
+    if (!confirm('Er du sikker på at du vil rydde alt indhold i tabellen?')) return;
+    document.querySelectorAll('td.editable').forEach(td => td.innerHTML = '');
+    localStorage.removeItem(STORAGE_KEY);
+    const status = document.getElementById('saveStatus');
+    status.textContent = 'Indhold ryddet';
+    status.classList.add('visible');
+    setTimeout(() => status.classList.remove('visible'), 2500);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadTable();
+
+    // Autosave on input
+    document.querySelectorAll('td.editable').forEach(td => {
+      td.addEventListener('input', () => {
+        clearTimeout(td._saveTimer);
+        td._saveTimer = setTimeout(saveTable, 1000);
+      });
+    });
+
+    // Back to top button
+    const btn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    });
+
+    // Navbar active state
+    const sections = [
+      { id: 'del1' },
+      { id: 'rammen' },
+      { id: 'arenaer' },
+      { id: 'maalgrupper' },
+      { id: 'trinmodel' },
+      { id: 'lovgivning' },
+      { id: 'processp' },
+      { id: 'del2' },
+      { id: 'moeder' },
+      { id: 'aabning' },
+      { id: 'laesning' },
+    ];
+
+    const navLinks = document.querySelectorAll('.navbar a');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    sections.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+  });
+</script>
+</body>
+</html>
